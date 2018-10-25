@@ -23,12 +23,12 @@ setup :: Window -> UI ()
 setup window = do
     return window # set title "Canvas - Examples"
 
-    points <- UI.span # set text "[]"
-    clicking  <- UI.span # set text "no"
-    result <- UI.span # set text "No Result"
-    url <- UI.loadFile "image/png" "lib0.png"
-    libimg    <- UI.img # set UI.src url
-    curlib <- UI.span # set text "lib0.png"
+    points   <- UI.span  # set text "[]"
+    clicking <- UI.span  # set text "no"
+    result   <- UI.span  # set text "No Result"
+    url      <- UI.loadFile "image/png" "img/lib0.png"
+    libimg   <- UI.img   # set UI.src url
+    curlib   <- UI.span  # set text "img/lib0.png"
     ptnumlab <- UI.span  # set text "sample point number: "
     ptnumber <- UI.input # set value "64"
 
@@ -61,9 +61,9 @@ setup window = do
 
     on UI.click change'lib $ const $ do
         libname <- get rtext curlib
-        let refresh = if libname == "lib0.png"
-                        then "lib1.png"
-                        else "lib0.png"
+        let refresh = if libname == "img/lib0.png"
+                        then "img/lib1.png"
+                        else "img/lib0.png"
           in do
           url <- UI.loadFile "image/png" refresh
           element libimg # set UI.src url
@@ -84,7 +84,7 @@ setup window = do
         element clicking # set text ("no")
         let pts = read pointstr
             sam'pt'num = fromIntegral $ read ptnumberstr 
-            lib = if libname == "lib0.png"
+            lib = if libname == "img/lib0.png"
                     then lib0 else lib1
             ((tml, _), _) = recognize sam'pt'num (reverse pts) lib
             in element result # set text tml
