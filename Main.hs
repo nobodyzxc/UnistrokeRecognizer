@@ -6,8 +6,6 @@ import Graphics.UI.Threepenny.Core
 import V1unirec
 import Templates
 
-getp x = p where (_, p) = lib0 !! x
-
 main :: IO ()
 main = startGUI defaultConfig setup
 
@@ -31,6 +29,8 @@ setup window = do
     url <- UI.loadFile "image/png" "lib0.png"
     libimg    <- UI.img # set UI.src url
     curlib <- UI.span # set text "lib0.png"
+    ptnumlab <- UI.span  # set text "sample point number: "
+    ptnumber <- UI.input # set value "64"
 
     out  <- UI.span
         # set text coorTit
@@ -42,31 +42,22 @@ setup window = do
         # set style [("border", "solid black 1px"),
                      ("background", "#eee")]
 
-    draw <- UI.button #+ [string "draw"]
-    change'lib <- UI.button #+ [string "change lib"]
+    change'lib <- UI.button #+ [string "change library"]
 
     getBody window #+
-        [ element canvas
+        [ element result
+        , UI.br
+        , element canvas
         , element libimg
         , UI.br
-        , element draw
         , element change'lib
         , UI.br
-        -- , element clicking
+        , element ptnumlab
+        , element ptnumber
         , UI.br
         , element out
         , UI.br
-        , element result
-        , UI.br
         , element points]
-
-    -- on UI.click draw $ const $ do
-    --   canvas # UI.beginPath
-    --   let p = getp 11
-    --       l = length p in
-    --     forM_ (take (div l 2) p) (flip UI.lineTo canvas)
-    --   canvas # UI.closePath
-    --   canvas # UI.stroke
 
     on UI.click change'lib $ const $ do
         libname <- get rtext curlib
@@ -89,11 +80,13 @@ setup window = do
     on UI.mouseup canvas $ \xy -> do
         pointstr <- get rtext points
         libname <- get rtext curlib
+        ptnumberstr <- get value ptnumber
         element clicking # set text ("no")
         let pts = read pointstr
+            sam'pt'num = fromIntegral $ read ptnumberstr 
             lib = if libname == "lib0.png"
                     then lib0 else lib1
-            ((tml, _), _) = recognize (reverse pts) lib
+            ((tml, _), _) = recognize sam'pt'num (reverse pts) lib
             in element result # set text tml
 
     on UI.mousemove canvas $ \xy -> do

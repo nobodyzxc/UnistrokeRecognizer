@@ -1,4 +1,3 @@
--- module V1unirec (recognize, toRad) where
 module V1unirec where
 
 -- $1 Unistroke Recognizer
@@ -65,18 +64,18 @@ translate'to points (kx, ky) =
 
 -- step 4
 
-preproc raw'points =
-  let resam'points = resample raw'points 64
+preproc pt'num raw'points =
+  let resam'points = resample raw'points pt'num
       resam'rot = indicative'angle resam'points
       roted'points = rotate'by resam'points (-resam'rot)
       scaled'points = scale'to roted'points 250
       transed'points = translate'to scaled'points (0, 0)
     in transed'points
 
-recognize raw'points raw'templates =
+recognize pt'num raw'points raw'templates =
   let
-      points = preproc raw'points
-      templates = [(t, preproc p) | (t, p) <- raw'templates]
+      points = preproc pt'num raw'points
+      templates = [(t, preproc pt'num p) | (t, p) <- raw'templates]
       size = 250
       halfDiagonal = sqrt $ (size ** 2) + (size ** 2)
       theta = toRad 45
